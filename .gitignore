@@ -1,0 +1,25 @@
+# Keil C51 / uVision 构建产物
+firmware/OUT/
+firmware/Project/Listings/
+*.obj
+*.lst
+*.lnp
+*.m51
+*.build_log.htm
+*.uvgui.*
+*.uvguix.*
+*.bak
+*.uvopt.bak
+
+# 可选：如需随仓库发布预编译 hex，请放到 firmware/release/ 并取消下面这行
+# *.hex
+
+# 操作系统 / 编辑器
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+*~
+
+# 嘉立创EDA 本地工程数据库（SQLite，非可分享格式；工程导出包是 .epro2）
+*.eprj2

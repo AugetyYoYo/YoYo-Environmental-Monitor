@@ -1,0 +1,426 @@
+#ifndef __CITY_TABLE_H__
+#define __CITY_TABLE_H__
+
+#include "STC8H.H"
+#include "oled.h"
+#include "bsp_gps.h"
+
+/* zi dong sheng cheng: cheng shi jing wei du (du x100) + ming cheng */
+typedef struct {
+    int lat;
+    int lon;
+    const char code *name;
+} city_t;
+
+static const city_t code g_cities[] = {
+    {2582, 9886, ""},
+    {4578, 13101, "\xC6\xDF\xCC\xA8\xBA\xD3"},
+    {1826, 10952, "\xC8\375\xD1\xC7"},
+    {2627, 11765, "\xC8\375\xC3\xF7"},
+    {3032, 11226, "\xC8\375\xC9\xB3"},
+    {3478, 11121, "\xC8\375\xC3\xC5\xCF\xBF"},
+    {3124, 12148, "\xC9\xCF\xBA\xA3"},
+    {2846, 11795, "\xC9\xCF\xC8\xC4"},
+    {2303, 11376, "\xB6\xAB\xDD\xB8"},
+    {3744, 11868, "\xB6\xAB\xD3\xAA"},
+    {3751, 10520, "\xD6\xD0\xCE\xC0"},
+    {2252, 11340, "\xD6\xD0\xC9\xBD"},
+    {3561, 10325, "\xC1\xD9\xCF\xC4"},
+    {3609, 11153, "\xC1\xD9\xB7\xDA"},
+    {3511, 11836, "\xC1\xD9\xD2\xCA"},
+    {2389, 10010, "\xC1\xD9\xB2\xD7"},
+    {4001, 12436, "\xB5\xA4\xB6\xAB"},
+    {2847, 11993, "\xC0\xF6\xCB\xAE"},
+    {2686, 10023, "\xC0\xF6\xBD\xAD"},
+    {4100, 11314, "\xCE\xDA\xC0\xBC\xB2\xEC\xB2\xBC"},
+    {3966, 10680, "\xCE\xDA\xBA\xA3"},
+    {4383, 8762, "\xCE\xDA\xC2\xB3\xC4\xBE\xC6\xEB"},
+    {2956, 10377, "\xC0\xD6\xC9\xBD"},
+    {2971, 11601, "\xBE\xC5\xBD\xAD"},
+    {2292, 11205, "\xD4\xC6\xB8\xA1"},
+    {3385, 11578, "\xD9\xF1\xD6\xDD"},
+    {4773, 12885, "\xD2\xC1\xB4\xBA"},
+    {4392, 8133, "\xD2\xC1\xC0\xE7"},
+    {2303, 11313, "\xB7\xF0\xC9\xBD"},
+    {4681, 13033, "\xBC\xD1\xC4\xBE\xCB\xB9"},
+    {3888, 11547, "\xB1\xA3\xB6\xA8"},
+    {2514, 9918, "\xB1\xA3\xC9\xBD"},
+    {3215, 11410, "\xD0\xC5\xD1\xF4"},
+    {1964, 10917, "\xD9\xD9\xD6\xDD"},
+    {3972, 7617, "\xBF\xCB\xD7\xCE\xC0\xD5\xCB\xD5"},
+    {4559, 8490, "\xBF\xCB\xC0\xAD\xC2\xEA\xD2\xC0"},
+    {3174, 11653, "\xC1\xF9\xB0\xB2"},
+    {2660, 10484, "\xC1\xF9\xC5\xCC\xCB\xAE"},
+    {3607, 10384, "\xC0\xBC\xD6\xDD"},
+    {4609, 12204, "\xD0\xCB\xB0\xB2"},
+    {2959, 10506, "\xC4\xDA\xBD\xAD"},
+    {2789, 10227, "\xC1\xB9\xC9\xBD"},
+    {4066, 10985, "\xB0\xFC\xCD\xB7"},
+    {3991, 11641, "\xB1\xB1\xBE\xA9"},
+    {2149, 10913, "\xB1\xB1\xBA\xA3"},
+    {3264, 11080, "\xCA\xAE\xD1\xDF"},
+    {3206, 11880, "\xC4\xCF\xBE\xA9"},
+    {3084, 10612, "\xC4\xCF\xB3\xE4"},
+    {2282, 10837, "\xC4\xCF\xC4\xFE"},
+    {2665, 11818, "\xC4\xCF\xC6\xBD"},
+    {2869, 11586, "\xC4\xCF\xB2\375"},
+    {3199, 12090, "\xC4\xCF\xCD\xA8"},
+    {3300, 11253, "\xC4\xCF\xD1\xF4"},
+    {4491, 8207, "\xB2\xA9\xB6\xFB\xCB\xFE"},
+    {2449, 11810, "\xCF\xC3\xC3\xC5"},
+    {4665, 13117, "\xCB\xAB\xD1\xBC\xC9\xBD"},
+    {2866, 12143, "\xCC\xA8\xD6\xDD"},
+    {3183, 11723, "\xBA\xCF\xB7\xCA"},
+    {2712, 11500, "\xBC\xAA\xB0\xB2"},
+    {4384, 12656, "\xBC\xAA\xC1\xD6"},
+    {4296, 8920, "\xCD\xC2\xC2\xB3\xB7\xAC"},
+    {3752, 11115, "\xC2\xC0\xC1\xBA"},
+    {3800, 10621, "\xCE\xE2\xD6\xD2"},
+    {3363, 11470, "\xD6\xDC\xBF\xDA"},
+    {4922, 11977, "\xBA\xF4\xC2\xD7\xB1\xB4\xB6\xFB"},
+    {4085, 11176, "\xBA\xF4\xBA\xCD\xBA\xC6\xCC\xD8"},
+    {3712, 7993, "\xBA\xCD\xCC\xEF"},
+    {2985, 11433, "\xCF\xCC\xC4\xFE"},
+    {3434, 10872, "\xCF\xCC\xD1\xF4"},
+    {4283, 9352, "\xB9\xFE\xC3\xDC"},
+    {4581, 12654, "\xB9\xFE\xB6\xFB\xB1\xF5"},
+    {3964, 11819, "\xCC\xC6\xC9\xBD"},
+    {3442, 11566, "\xC9\xCC\xC7\xF0"},
+    {3388, 10992, "\xC9\xCC\xC2\xE5"},
+    {3948, 7600, "\xBF\xA6\xCA\xB2"},
+    {3075, 12076, "\xBC\xCE\xD0\xCB"},
+    {3978, 9830, "\xBC\xCE\xD3\xF8\xB9\xD8"},
+    {4317, 12436, "\xCB\xC4\xC6\xBD"},
+    {3602, 10625, "\xB9\xCC\xD4\xAD"},
+    {4675, 8299, "\xCB\xFE\xB3\xC7"},
+    {5042, 12415, "\xB4\xF3\xD0\xCB\xB0\xB2\xC1\xEB"},
+    {4008, 11331, "\xB4\xF3\xCD\xAC"},
+    {4659, 12511, "\xB4\xF3\xC7\xEC"},
+    {2560, 10024, "\xB4\xF3\xC0\xED"},
+    {3892, 12162, "\xB4\xF3\xC1\xAC"},
+    {3459, 10573, "\xCC\xEC\xCB\xAE"},
+    {3909, 11721, "\xCC\xEC\xBD\xF2"},
+    {3788, 11256, "\xCC\xAB\xD4\xAD"},
+    {3752, 12213, "\xCD\xFE\xBA\xA3"},
+    {2770, 11200, "\xC2\xA6\xB5\xD7"},
+    {3093, 11392, "\xD0\xA2\xB8\xD0"},
+    {2667, 11955, "\xC4\xFE\xB5\xC2"},
+    {2987, 12163, "\xC4\xFE\xB2\xA8"},
+    {3053, 11706, "\xB0\xB2\xC7\xEC"},
+    {3269, 10904, "\xB0\xB2\xBF\xB5"},
+    {3611, 11440, "\xB0\xB2\xD1\xF4"},
+    {2626, 10595, "\xB0\xB2\xCB\xB3"},
+    {3559, 10463, "\xB6\xA8\xCE\xF7"},
+    {2876, 10465, "\xD2\xCB\xB1\xF6"},
+    {3070, 11129, "\xD2\xCB\xB2\375"},
+    {2782, 11442, "\xD2\xCB\xB4\xBA"},
+    {3437, 10724, "\xB1\xA6\xBC\xA6"},
+    {3095, 11877, "\xD0\xFB\xB3\xC7"},
+    {3365, 11697, "\xCB\xDE\xD6\xDD"},
+    {3397, 11828, "\xCB\xDE\xC7\xA8"},
+    {2924, 9178, "\xC9\xBD\xC4\xCF"},
+    {2936, 11314, "\xD4\xC0\xD1\xF4"},
+    {2238, 10737, "\xB3\xE7\xD7\xF3"},
+    {3187, 10675, "\xB0\xCD\xD6\xD0"},
+    {4075, 10739, "\xB0\xCD\xD1\xE5\xC4\xD7\xB6\xFB"},
+    {4177, 8615, "\xB0\xCD\xD2\xF4\xB9\xF9\xC0\xE3"},
+    {3182, 11998, "\xB3\xA3\xD6\xDD"},
+    {2904, 11171, "\xB3\xA3\xB5\xC2"},
+    {3555, 10667, "\xC6\xBD\xC1\xB9"},
+    {3377, 11320, "\xC6\xBD\xB6\xA5\xC9\xBD"},
+    {3244, 10585, "\xB9\xE3\xD4\xAA"},
+    {3046, 10664, "\xB9\xE3\xB0\xB2"},
+    {2314, 11327, "\xB9\xE3\xD6\xDD"},
+    {3572, 10765, "\xC7\xEC\xD1\xF4"},
+    {3954, 11669, "\xC0\xC8\xB7\xBB"},
+    {3659, 10950, "\xD1\xD3\xB0\xB2"},
+    {4292, 12948, "\xD1\xD3\xB1\xDF"},
+    {3480, 11431, "\xBF\xAA\xB7\xE2"},
+    {4077, 11489, "\xD5\xC5\xBC\xD2\xBF\xDA"},
+    {2912, 11049, "\xD5\xC5\xBC\xD2\xBD\xE7"},
+    {3893, 10046, "\xD5\xC5\xD2\xB4"},
+    {3421, 11729, "\xD0\xEC\xD6\xDD"},
+    {2444, 9859, "\xB5\xC2\xBA\xEA"},
+    {3744, 11637, "\xB5\xC2\xD6\xDD"},
+    {3113, 10440, "\xB5\xC2\xD1\xF4"},
+    {3842, 11274, "\xD0\xC3\xD6\xDD"},
+    {2758, 11001, "\xBB\xB3\xBB\xAF"},
+    {3028, 10949, "\xB6\xF7\xCA\xA9"},
+    {2312, 11442, "\xBB\xDD\xD6\xDD"},
+    {3066, 10408, "\xB3\xC9\xB6\xBC"},
+    {3240, 11942, "\xD1\xEF\xD6\xDD"},
+    {4096, 11797, "\xB3\xD0\xB5\xC2"},
+    {2795, 11636, "\xB8\xA7\xD6\xDD"},
+    {4189, 12396, "\xB8\xA7\xCB\xB3"},
+    {2965, 9112, "\xC0\xAD\xC8\xF8"},
+    {2356, 11638, "\xBD\xD2\xD1\xF4"},
+    {2659, 10173, "\xC5\xCA\xD6\xA6\xBB\xA8"},
+    {2341, 10422, "\xCE\xC4\xC9\xBD"},
+    {3531, 11393, "\xD0\xC2\xCF\xE7"},
+    {2782, 11492, "\xD0\xC2\xD3\xE0"},
+    {3150, 12032, "\xCE\xDE\xCE\375"},
+    {2928, 8889, "\xC8\xD5\xBF\xA6\xD4\xF2"},
+    {3542, 11953, "\xC8\xD5\xD5\xD5"},
+    {2487, 10285, "\xC0\xA5\xC3\xF7"},
+    {4402, 8732, "\xB2\375\xBC\xAA"},
+    {3115, 9718, "\xB2\375\xB6\xBC"},
+    {2734, 10372, "\xD5\xD1\xCD\xA8"},
+    {3769, 11276, "\xBD\xFA\xD6\xD0"},
+    {3550, 11286, "\xBD\xFA\xB3\xC7"},
+    {2283, 10097, "\xC6\xD5\xB6\375"},
+    {2927, 11718, "\xBE\xB0\xB5\xC2\xD5\xF2"},
+    {2550, 10380, "\xC7\xFA\xBE\xB8"},
+    {3934, 11244, "\xCB\xB7\xD6\xDD"},
+    {4158, 12046, "\xB3\xAF\xD1\xF4"},
+    {4149, 12369, "\xB1\xBE\xCF\xAA"},
+    {2376, 10923, "\xC0\xB4\xB1\xF6"},
+    {3025, 12022, "\xBA\xBC\xD6\xDD"},
+    {4515, 12483, "\xCB\xC9\xD4\xAD"},
+    {2965, 9437, "\xC1\xD6\xD6\xA5"},
+    {3448, 10025, "\xB9\xFB\xC2\xE5"},
+    {3482, 11733, "\xD4\xE6\xD7\xAF"},
+    {2433, 10943, "\xC1\xF8\xD6\xDD"},
+    {2783, 11314, "\xD6\xEA\xD6\xDE"},
+    {2524, 11020, "\xB9\xF0\xC1\xD6"},
+    {2429, 11613, "\xC3\xB7\xD6\xDD"},
+    {2348, 11129, "\xCE\xE0\xD6\xDD"},
+    {2505, 10153, "\xB3\xFE\xD0\xDB"},
+    {3829, 10974, "\xD3\xDC\xC1\xD6"},
+    {3793, 10264, "\xCE\xE4\xCD\xFE"},
+    {3060, 11431, "\xCE\xE4\xBA\xBA"},
+    {2729, 10530, "\xB1\xCF\xBD\xDA"},
+    {2643, 11162, "\xD3\xC0\xD6\xDD"},
+    {3307, 10703, "\xBA\xBA\xD6\xD0"},
+    {2336, 11669, "\xC9\xC7\xCD\xB7"},
+    {2279, 11538, "\xC9\xC7\xCE\xB2"},
+    {2258, 11309, "\xBD\xAD\xC3\xC5"},
+    {3067, 11750, "\xB3\xD8\xD6\xDD"},
+    {4168, 12347, "\xC9\xF2\xD1\xF4"},
+    {3831, 11685, "\xB2\xD7\xD6\xDD"},
+    {3477, 11376, "\xBA\xD3\xC4\xCF"},
+    {2470, 10809, "\xBA\xD3\xB3\xD8"},
+    {2375, 11471, "\xBA\xD3\xD4\xB4"},
+    {2488, 11868, "\xC8\xAA\xD6\xDD"},
+    {3621, 11709, "\xCC\xA9\xB0\xB2"},
+    {3246, 11993, "\xCC\xA9\xD6\xDD"},
+    {2888, 10545, "\xE3\xF2\xD6\xDD"},
+    {3462, 11246, "\xC2\xE5\xD1\xF4"},
+    {3666, 11713, "\xBC\xC3\xC4\xCF"},
+    {3542, 11659, "\xBC\xC3\xC4\xFE"},
+    {3651, 10211, "\xBA\xA3\xB6\xAB"},
+    {3696, 10091, "\xBA\xA3\xB1\xB1"},
+    {2003, 11036, "\xBA\xA3\xC4\xCF"},
+    {3629, 10063, "\xBA\xA3\xC4\xCF"},
+    {2004, 11033, "\xBA\xA3\xBF\xDA"},
+    {3738, 9738, "\xBA\xA3\xCE\xF7"},
+    {3682, 11806, "\xD7\xCD\xB2\xA9"},
+    {3396, 11680, "\xBB\xB4\xB1\xB1"},
+    {3263, 11701, "\xBB\xB4\xC4\xCF"},
+    {3362, 11902, "\xBB\xB4\xB0\xB2"},
+    {2255, 11406, "\xC9\xEE\xDB\xDA"},
+    {2369, 11306, "\xC7\xE5\xD4\xB6"},
+    {2800, 12071, "\xCE\xC2\xD6\xDD"},
+    {3451, 10952, "\xCE\xBC\xC4\xCF"},
+    {3055, 11435, "\xBA\xFE\xB1\xB1"},
+    {3090, 12009, "\xBA\xFE\xD6\xDD"},
+    {2784, 11295, "\xCF\xE6\xCC\xB6"},
+    {2832, 10975, "\xCF\xE6\xCE\xF7"},
+    {2128, 11037, "\xD5\xBF\xBD\xAD"},
+    {3226, 11834, "\xB3\xFC\xD6\xDD"},
+    {3739, 11798, "\xB1\xF5\xD6\xDD"},
+    {3359, 11402, "\xE4\xF0\xBA\xD3"},
+    {2452, 11765, "\xD5\xC4\xD6\xDD"},
+    {3671, 11917, "\xCE\xAB\xB7\xBB"},
+    {2366, 11663, "\xB3\xB1\xD6\xDD"},
+    {3577, 11504, "\xE5\xA7\xD1\xF4"},
+    {3747, 12145, "\xD1\xCC\xCC\xA8"},
+    {3522, 11325, "\xBD\xB9\xD7\xF7"},
+    {4456, 12964, "\xC4\xB5\xB5\xA4\xBD\xAD"},
+    {2266, 11019, "\xD3\xF1\xC1\xD6"},
+    {3301, 9701, "\xD3\xF1\xCA\xF7"},
+    {2436, 10255, "\xD3\xF1\xCF\xAA"},
+    {2228, 11358, "\xD6\xE9\xBA\xA3"},
+    {3499, 10292, "\xB8\xCA\xC4\xCF"},
+    {3006, 10197, "\xB8\xCA\xD7\xCE"},
+    {4563, 12285, "\xB0\xD7\xB3\xC7"},
+    {4194, 12643, "\xB0\xD7\xC9\xBD"},
+    {3655, 10414, "\xB0\xD7\xD2\xF8"},
+    {2391, 10662, "\xB0\xD9\xC9\xAB"},
+    {2856, 11236, "\xD2\xE6\xD1\xF4"},
+    {3336, 12017, "\xD1\xCE\xB3\xC7"},
+    {4113, 12208, "\xC5\xCC\xBD\xF5"},
+    {3008, 10386, "\xC3\xBC\xC9\xBD"},
+    {3899, 10639, "\xCA\xAF\xD7\xEC\xC9\xBD"},
+    {3805, 11447, "\xCA\xAF\xBC\xD2\xD7\xAF"},
+    {2608, 11930, "\xB8\xA3\xD6\xDD"},
+    {3994, 11961, "\xC7\xD8\xBB\xCA\xB5\xBA"},
+    {2337, 10243, "\xBA\xEC\xBA\xD3"},
+    {3004, 12059, "\xC9\xDC\xD0\xCB"},
+    {4666, 12698, "\xCB\xE7\xBB\xAF"},
+    {3147, 10469, "\xC3\xE0\xD1\xF4"},
+    {3646, 11599, "\xC1\xC4\xB3\xC7"},
+    {2305, 11247, "\xD5\xD8\xC7\xEC"},
+    {2935, 10478, "\xD7\xD4\xB9\xB1"},
+    {2999, 12221, "\xD6\xDB\xC9\xBD"},
+    {3136, 11844, "\xCE\xDF\xBA\xFE"},
+    {3130, 12059, "\xCB\xD5\xD6\xDD"},
+    {2167, 11093, "\xC3\xAF\xC3\xFB"},
+    {3034, 11225, "\xBE\xA3\xD6\xDD"},
+    {3104, 11221, "\xBE\xA3\xC3\xC5"},
+    {2546, 11901, "\xC6\xCE\xCC\xEF"},
+    {3524, 11549, "\xBA\xCA\xD4\xF3"},
+    {2763, 11386, "\xC6\xBC\xCF\xE7"},
+    {4067, 12224, "\xD3\xAA\xBF\xDA"},
+    {4072, 12084, "\xBA\xF9\xC2\xAB\xB5\xBA"},
+    {3292, 11740, "\xB0\xF6\xB2\xBA"},
+    {3775, 11568, "\xBA\xE2\xCB\xAE"},
+    {2690, 11258, "\xBA\xE2\xD1\xF4"},
+    {2898, 11887, "\xE1\xE9\xD6\xDD"},
+    {3201, 11213, "\xCF\xE5\xD1\xF4"},
+    {2201, 10080, "\xCE\xF7\xCB\xAB\xB0\xE6"},
+    {3662, 10178, "\xCE\xF7\xC4\xFE"},
+    {3435, 10895, "\xCE\xF7\xB0\xB2"},
+    {3404, 11386, "\xD0\xED\xB2\375"},
+    {2312, 10961, "\xB9\xF3\xB8\xDB"},
+    {2665, 10664, "\xB9\xF3\xD1\xF4"},
+    {2441, 11157, "\xBA\xD8\xD6\xDD"},
+    {3013, 10463, "\xD7\xCA\xD1\xF4"},
+    {2584, 11494, "\xB8\xD3\xD6\xDD"},
+    {4226, 11890, "\xB3\xE0\xB7\xE5"},
+    {4289, 12515, "\xC1\xC9\xD4\xB4"},
+    {4127, 12324, "\xC1\xC9\xD1\xF4"},
+    {3121, 10747, "\xB4\xEF\xD6\xDD"},
+    {3503, 11101, "\xD4\xCB\xB3\xC7"},
+    {3460, 11923, "\xC1\xAC\xD4\xC6\xB8\xDB"},
+    {2783, 9971, "\xB5\xCF\xC7\xEC"},
+    {4173, 12595, "\xCD\xA8\xBB\xAF"},
+    {4366, 12225, "\xCD\xA8\xC1\xC9"},
+    {3054, 10560, "\xCB\xEC\xC4\xFE"},
+    {2773, 10693, "\xD7\xF1\xD2\xE5"},
+    {3708, 11503, "\xD0\xCF\xCC\xA8"},
+    {3148, 9206, "\xC4\xC7\xC7\xFA"},
+    {3663, 11455, "\xBA\xAA\xB5\xA6"},
+    {2725, 11147, "\xC9\xDB\xD1\xF4"},
+    {3475, 11363, "\xD6\xA3\xD6\xDD"},
+    {2578, 11302, "\xB3\xBB\xD6\xDD"},
+    {3961, 10979, "\xB6\xF5\xB6\xFB\xB6\xE0\xCB\xB9"},
+    {3040, 11490, "\xB6\xF5\xD6\xDD"},
+    {3974, 9850, "\xBE\xC6\xC8\xAA"},
+    {2957, 10656, "\xD6\xD8\xC7\xEC"},
+    {2957, 10656, "\xD6\xD8\xC7\xEC"},
+    {2908, 11965, "\xBD\xF0\xBB\xAA"},
+    {3853, 10219, "\xBD\xF0\xB2\375"},
+    {2199, 10866, "\xC7\xD5\xD6\xDD"},
+    {4223, 12373, "\xCC\xFA\xC1\xEB"},
+    {2774, 10920, "\xCD\xAD\xC8\xCA"},
+    {3490, 10895, "\xCD\xAD\xB4\xA8"},
+    {3095, 11782, "\xCD\xAD\xC1\xEA"},
+    {3849, 10624, "\xD2\xF8\xB4\xA8"},
+    {4394, 11605, "\xCE\375\xC1\xD6\xB9\xF9\xC0\xD5"},
+    {4110, 12113, "\xBD\xF5\xD6\xDD"},
+    {3219, 11943, "\xD5\xF2\xBD\xAD"},
+    {4382, 12533, "\xB3\xA4\xB4\xBA"},
+    {2823, 11295, "\xB3\xA4\xC9\xB3"},
+    {3620, 11312, "\xB3\xA4\xD6\xCE"},
+    {4203, 12168, "\xB8\xB7\xD0\xC2"},
+    {3290, 11582, "\xB8\xB7\xD1\xF4"},
+    {2169, 10836, "\xB7\xC0\xB3\xC7\xB8\xDB"},
+    {2186, 11199, "\xD1\xF4\xBD\xAD"},
+    {3786, 11359, "\xD1\xF4\xC8\xAA"},
+    {4118, 8027, "\xB0\xA2\xBF\xCB\xCB\xD5"},
+    {4785, 8815, "\xB0\xA2\xC0\xD5\xCC\xA9"},
+    {3291, 10171, "\xB0\xA2\xB0\xD3"},
+    {3886, 10574, "\xB0\xA2\xC0\xAD\xC9\xC6"},
+    {3251, 8011, "\xB0\xA2\xC0\xEF"},
+    {3341, 10493, "\xC2\xA4\xC4\xCF"},
+    {3170, 11339, "\xCB\xE6\xD6\xDD"},
+    {3002, 10305, "\xD1\xC5\xB0\xB2"},
+    {3607, 12039, "\xC7\xE0\xB5\xBA"},
+    {4112, 12300, "\xB0\xB0\xC9\xBD"},
+    {2482, 11360, "\xC9\xD8\xB9\xD8"},
+    {3168, 11851, "\xC2\xED\xB0\xB0\xC9\xBD"},
+    {3302, 11403, "\xD7\xA4\xC2\xED\xB5\xEA"},
+    {4530, 13098, "\xBC\xA6\xCE\xF7"},
+    {3575, 11430, "\xBA\xD7\xB1\xDA"},
+    {4736, 13030, "\xBA\xD7\xB8\xDA"},
+    {2827, 11708, "\xD3\xA5\xCC\xB6"},
+    {3046, 11488, "\xBB\xC6\xB8\xD4"},
+    {3553, 10202, "\xBB\xC6\xC4\xCF"},
+    {2972, 11835, "\xBB\xC6\xC9\xBD"},
+    {3021, 11505, "\xBB\xC6\xCA\xAF"},
+    {5025, 12754, "\xBA\xDA\xBA\xD3"},
+    {2659, 10799, "\xC7\xAD\xB6\xAB\xC4\xCF"},
+    {2626, 10753, "\xC7\xAD\xC4\xCF"},
+    {2701, 10604, "\xC7\xAD\xCE\xF7\xC4\xCF"},
+    {4736, 12392, "\xC6\xEB\xC6\xEB\xB9\xFE\xB6\xFB"},
+    {2508, 11702, "\xC1\xFA\xD1\xD2"},
+};
+
+#define CITY_N ((int)(sizeof(g_cities) / sizeof(g_cities[0])))
+
+/* zui jin cheng shi: fan hui name (code zhi zhen), mei you fan hui 0 */
+static const char code *city_lookup(unsigned int lat_d, unsigned int lat_f4,
+                                     unsigned int lon_d, unsigned int lon_f4) {
+    long la;
+    long lo;
+    long dl;
+    long dn;
+    unsigned long dist;
+    unsigned long best;
+    int i;
+    int bi;
+
+    la = (long)lat_d * 100L + (long)(lat_f4 / 100U);
+    lo = (long)lon_d * 100L + (long)(lon_f4 / 100U);
+    bi = -1;
+    best = 0xFFFFFFFFUL;
+    for (i = 0; i < CITY_N; i++)
+    {
+        dl = la - (long)g_cities[i].lat;
+        dn = lo - (long)g_cities[i].lon;
+        dist = (unsigned long)(dl * dl) + (unsigned long)((dn * dn * 3L) / 4L);
+        if (dist < best)
+        {
+            best = dist;
+            bi = i;
+        }
+    }
+    if (bi < 0)
+    {
+        return 0;
+    }
+    return g_cities[bi].name;
+}
+
+/* zai OLED di page hang you dui qi xian shi zui jin cheng shi (zui duo 5 zi) */
+static void city_show(unsigned char page, gps_info_t *g) {
+    const char code *ct;
+    const char code *cp;
+    unsigned int n;
+    unsigned char col;
+
+    if (g->lat_d == 0U && g->lat_f4 == 0U)
+    {
+        return;
+    }
+    ct = city_lookup(g->lat_d, g->lat_f4, g->lon_d, g->lon_f4);
+    if (ct == 0)
+    {
+        return;
+    }
+    cp = ct;
+    n = 0;
+    while (*cp != 0)
+    {
+        if (((unsigned char)*cp) >= 0x80) { cp += 2; } else { cp += 1; }
+        n++;
+    }
+    if (n > 5U)
+    {
+        n = 5U;
+    }
+    col = (unsigned char)(128U - n * 16U);
+    OLED_SHOW_STR(page, col, (unsigned char *)ct);
+}
+
+#endif
